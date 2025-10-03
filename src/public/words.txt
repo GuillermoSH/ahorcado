@@ -1,0 +1,15 @@
+php
+hola
+mundo
+parece
+util
+clase
+funcion
+ahorcado
+juego
+resetear
+palabra
+docker
+licencia
+archivo
+carpeta
