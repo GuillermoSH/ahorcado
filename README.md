@@ -17,13 +17,16 @@ Este es un proyecto simple en **PHP** que implementa el clásico juego del **aho
 ```
 ahorcado/
 │── src/public
+|    │── words <---------------- Carpeta de archivos con las palabras
+|    |    │── ...
+|    │── config.ini <----------- Archivo de configuracion
 |    │── Game.php <------------- Logica del juego general
+|    │── History.php <---------- Logica de logging
 |    │── index.php
 |    │── Renderer.php <--------- Canva del ahorcado
 |    │── Storage.php <---------- Guardado del estado de la partida
 |    │── WordProvider.php <----- Recogida de la palabra
 |    │── style.css 
-|    │── words.txt <------------ Archivo con las palabras
 |── .dockerignore
 |── docker-compose.yml
 |── Dockerfile
