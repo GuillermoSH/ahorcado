@@ -8,7 +8,7 @@ Este es un proyecto simple en **PHP** que implementa el clásico juego del **aho
 
 - Tener docker y contenedor de docker de **PHP >= 7.4**.
 - Un navegador web.
-- Opcional: archivo `style.css` para mejorar el estilo.
+- Opcional: WSL si estás en Windows para trabajar más cómodo por línea de comandos
 
 ---
 
@@ -16,9 +16,20 @@ Este es un proyecto simple en **PHP** que implementa el clásico juego del **aho
 
 ```
 ahorcado/
-│── index.php
-│── reset.php
-│── style.css   (opcional)
+│── src/public
+|    │── Game.php <------------- Logica del juego general
+|    │── index.php
+|    │── Renderer.php <--------- Canva del ahorcado
+|    │── Storage.php <---------- Guardado del estado de la partida
+|    │── WordProvider.php <----- Recogida de la palabra
+|    │── style.css 
+|    │── words.txt <------------ Archivo con las palabras
+|── .dockerignore
+|── docker-compose.yml
+|── Dockerfile
+|── LICENSE
+|── php.ini
+|── README.md
 ```
 
 ---
@@ -101,28 +112,13 @@ El juego muestra el progreso del ahorcado en **ASCII** según los intentos resta
 
 ## ▶️ Cómo ejecutar el proyecto
 
-1. Copia los archivos en la carpeta de tu servidor web local.  
-   Ejemplo en **XAMPP (Windows):**
+1. Entra a la carpeta del proyecto clonado anteriormente llamada `ahorcado` y ejecuta el comando para levantar la imagen de docker del proyecto:  
 
    ```bash
-   C:\xampp\htdocs\ahorcado\
+   docker compose up
    ```
-
-   Ejemplo en **Linux (con Apache):**
+2. Abre en el navegador:
 
    ```bash
-   /var/www/html/ahorcado/
+   http://localhost:8080
    ```
-
-2. Inicia Apache desde tu servidor local.  
-3. Abre en el navegador:
-
-   ```bash
-   http://localhost/ahorcado/index.php
-   ```
-
----
-
-## 📜 Licencia
-
-Este proyecto es de uso libre para fines educativos.

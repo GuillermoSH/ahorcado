@@ -1,6 +1,8 @@
 <?php
     declare(strict_types=1);
 
+    namespace App;
+
     class Renderer {
         private array $ascii = [
             6 => "
@@ -69,7 +71,7 @@
         ];
 
         public function ascii(int $attemptsLeft): string {
-            return "<pre>" . $this->ascii[$attemptsLeft] ?? $this->ascii[0] . "</pre>";
+            return $this->ascii[$attemptsLeft] ?? $this->ascii[0];
         }
     }
 ?>

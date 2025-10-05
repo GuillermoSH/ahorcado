@@ -1,5 +1,10 @@
 <?php
     declare(strict_types=1);
+
+    namespace App;
+
+    use InvalidArgumentException;
+
     class Game {
         private string $word;
         private int $maxAttempts;
@@ -7,7 +12,6 @@
         private array $usedLetters;
 
         public function __construct(string $word, int $maxAttempts = 6, ?array $state = null) {
-            session_start();
             $this->word = $word;
             $this->maxAttempts = $maxAttempts;
             $this->attemptsLeft = $maxAttempts;
@@ -21,9 +25,8 @@
         }
 
         public function guessLetter(string $letter): void {
-            if (strlen($letter) !== 1 || !ctype_alpha($letter)) {
-                throw new InvalidArgumentException("La letra debe ser un único carácter alfabético.");
-            }
+            if (strlen($letter) !== 1 || !ctype_alpha($letter)) throw new InvalidArgumentException("La letra debe ser un único carácter alfabético.");
+            if (in_array($letter, $this->usedLetters)) return;
             $this->usedLetters[] = $letter;
             if (strpos($this->word, $letter) === false) {
                 $this->attemptsLeft--;
