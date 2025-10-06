@@ -7,7 +7,7 @@ namespace App;
 class History {
     private string $filePath;
 
-    public function __construct(string $filePath = __DIR__ . '/history.log') {
+    public function __construct(string $filePath = '../logs/history.log') {
         $this->filePath = $filePath;
     }
 

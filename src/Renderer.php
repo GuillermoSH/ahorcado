@@ -71,7 +71,7 @@
         ];
 
         public function ascii(int $attemptsLeft): string {
-            return $this->ascii[$attemptsLeft] ?? $this->ascii[0];
+            return $this->ascii[$attemptsLeft] ?? $this->ascii[6];
         }
     }
 ?>

@@ -1,0 +1,39 @@
+:root {
+  --primary: #0077ff;
+  --accent: #00c6ff;
+  --danger: #ff4d4d;
+  --success: #28a745;
+  --bg: #f2f7ff;
+  --text: #222;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  width: 100%;
+  font-family: "Poppins", "Segoe UI", sans-serif;
+  background: url("./images/stacked-waves-haikei.svg");
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.error-message {
+  color: var(--danger);
+}
+
+.container {
+  border-radius: 15px;
+  background: rgba(255,255,255,0.05);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+}

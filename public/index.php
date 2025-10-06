@@ -3,11 +3,11 @@
 declare(strict_types=1);
 session_start();
 
-require_once __DIR__ . "/Renderer.php";
-require_once __DIR__ . "/Game.php";
-require_once __DIR__ . "/WordProvider.php";
-require_once __DIR__ . "/Storage.php";
-require_once __DIR__ . "/History.php";
+require_once "../src/Renderer.php";
+require_once "../src/Game.php";
+require_once "../src/WordProvider.php";
+require_once "../src/Storage.php";
+require_once "../src/History.php";
 
 use App\Renderer;
 use App\Game;
@@ -18,7 +18,7 @@ use App\History;
 $storage = new Storage();
 $logger = new History();
 
-$config = parse_ini_file(__DIR__ . '/config.ini');
+$config = parse_ini_file('../config.ini');
 $maxAttempts = (int) ($config['max_attempts'] ?? 6);
 $defaultCategory = $config['default_category'] ?? 'animales';
 
@@ -64,7 +64,7 @@ $storage->set('category', $category);
 
 $state = $storage->get('state');
 if ($state === null) {
-    $wordProvider = new WordProvider(__DIR__ . "/words/words_$category.txt");
+    $wordProvider = new WordProvider("../data/words_$category.txt");
     $game = new Game($wordProvider->getRandomWord(), $maxAttempts, null, $pointsPerHint);
 } else {
     $game = new Game($state['word'], $state['maxAttempts'], $state, $pointsPerHint);
