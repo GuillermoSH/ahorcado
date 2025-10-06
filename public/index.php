@@ -33,29 +33,33 @@ if ($category === null) {
     <html lang="es">
 
     <head>
-        <meta charset="UTF-8">
+        <meta charset="UTF-8" />
         <title>Seleccionar categoría - Ahorcado</title>
-        <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="styles.css" />
     </head>
 
     <body>
-        <div class="container start-screen">
+        <div class="container start-screen flex-center">
             <h1>🎯 Juego del Ahorcado</h1>
-            <form method="get">
-                <label>Selecciona una categoría:</label>
-                <select name="category" required>
-                    <option value="animales">🐾 Animales</option>
-                    <option value="frutas">🍎 Frutas</option>
-                    <option value="paises">🌍 Países</option>
-                    <option value="deportes">⚽ Deportes</option>
-                    <option value="peliculas">🎬 Películas</option>
-                </select>
-                <button type="submit">Iniciar partida</button>
+            <form method="get" class="flex-center">
+                <label for="category">Selecciona una categoría:</label>
+                <div class="custom-select-wrapper">
+                    <select autofocus name="category" id="category" required>
+                        <option value="animales">🐾 Animales</option>
+                        <option value="frutas">🍎 Frutas</option>
+                        <option value="paises">🌍 Países</option>
+                        <option value="deportes">⚽ Deportes</option>
+                        <option value="peliculas">🎬 Películas</option>
+                    </select>
+                    <span class="select-arrow">▾</span>
+                </div>
+                <button type="submit" class="btn-primary">Iniciar partida</button>
             </form>
         </div>
     </body>
 
     </html>
+
 <?php
     exit;
 }
@@ -66,11 +70,12 @@ $state = $storage->get('state');
 if ($state === null) {
     $wordProvider = new WordProvider("../data/words_$category.txt");
     $game = new Game($wordProvider->getRandomWord(), $maxAttempts, null, $pointsPerHint);
+    $storage->set('state', $game->toState());
 } else {
     $game = new Game($state['word'], $state['maxAttempts'], $state, $pointsPerHint);
 }
 
-$renderer = new Renderer();
+$renderer = new Renderer($maxAttempts);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['letter'])) {
@@ -109,17 +114,25 @@ if ($game->isWon()) {
 </head>
 
 <body>
-    <div class="container">
+    <div class="container flex-center">
         <h1>🎯 Juego del Ahorcado (<?php echo ucfirst($category); ?>)</h1>
 
-        <pre class="ascii"><?php echo $renderer->ascii($game->getAttemptsLeft()); ?></pre>
+        <?php echo $renderer->drawSvg($game->getAttemptsLeft()); ?>
 
-        <p><strong>Palabra:</strong> <?php echo implode(" ", str_split($game->getMaskedWord())); ?></p>
-        <p><strong>Intentos restantes:</strong> <?php echo $game->getAttemptsLeft(); ?></p>
-        <p><strong>Letras usadas:</strong> <?php echo implode(", ", $game->getUsedLetters()); ?></p>
+        <h2 class="masked-word"><?php echo implode(" ", str_split($game->getMaskedWord())); ?></h2>
+        <div class="game-info">
+            <div class="game-stat">
+                <h3>Intentos restantes:</h3>
+                <p><?php echo $game->getAttemptsLeft(); ?></p>
+            </div>
+            <div class="game-stat">
+                <h3>Letras usadas:</h3>
+                <p><?php echo implode(", ", $game->getUsedLetters()); ?></p>
+            </div>
+        </div>
 
         <?php if ($errorMessage): ?>
-            <p class="error-message">⚠️ <?php echo $errorMessage; ?></p>
+            <p class="error-message">🚨 <?php echo $errorMessage; ?></p>
         <?php endif; ?>
 
         <?php if ($hint): ?>
@@ -136,7 +149,7 @@ if ($game->isWon()) {
 
         <?php else: ?>
             <form method="post" class="game-form">
-                <label for="letter">Introduce una letra:</label>
+                <label for="letter" class="form-label">Introduce una letra:</label>
                 <input type="text" id="letter" name="letter" maxlength="1" required autofocus>
                 <button type="submit">Adivinar</button>
             </form>

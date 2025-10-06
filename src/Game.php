@@ -27,18 +27,21 @@ class Game
             $this->attemptsLeft = $state["attemptsLeft"];
             $this->usedLetters = $state["usedLetters"];
         }
-        $this->pointsPerHint = $pointsPerHint; 
+        $this->pointsPerHint = $pointsPerHint;
     }
 
     public function guessLetter(string $letter): void
     {
-        if (strlen($letter) !== 1 || !ctype_alpha($letter)) throw new InvalidArgumentException("La letra debe ser un único carácter alfabético.");
-        if (in_array($letter, $this->usedLetters)) return;
-        $this->usedLetters[] = $letter;
-        if (strpos($this->word, $letter) === false) {
-            $this->attemptsLeft--;
+        $letter = mb_strtoupper($letter, 'UTF-8');
+        if (mb_strlen($letter, 'UTF-8') !== 1 || !preg_match('/^\p{L}$/u', $letter)) {
+            throw new InvalidArgumentException("La letra debe ser un único carácter alfabético.");
         }
-        $this->toState();
+
+        if (in_array($letter, $this->usedLetters, true)) return;
+
+        $this->usedLetters[] = $letter;
+
+        if (mb_strpos($this->word, $letter) === false) $this->attemptsLeft--;
     }
 
     public function revealHint(): ?string
@@ -64,8 +67,9 @@ class Game
     public function getMaskedWord(): string
     {
         $maskedWord = "";
-        foreach (str_split($this->word) as $letter) {
-            $maskedWord .= in_array($letter, $this->usedLetters) ? $letter : "_";
+        $letters = preg_split('//u', $this->word, -1, PREG_SPLIT_NO_EMPTY); // multibyte-safe
+        foreach ($letters as $letter) {
+            $maskedWord .= in_array($letter, $this->usedLetters, true) ? $letter : "_";
         }
         return $maskedWord;
     }
