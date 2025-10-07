@@ -2,21 +2,23 @@
 
 declare(strict_types=1);
 
-namespace App;
+namespace App\Domain\Entity;
 
 use InvalidArgumentException;
 use RuntimeException;
 
-class Game
+final class Game
 {
+    public int $id;
     private string $word;
     private int $maxAttempts;
     private int $attemptsLeft;
     private array $usedLetters;
     private int $pointsPerHint;
 
-    public function __construct(string $word, int $maxAttempts = 6, ?array $state = null, int $pointsPerHint = 1)
+    public function __construct(int $id, string $word, int $maxAttempts = 6, ?array $state = null, int $pointsPerHint = 1)
     {
+        $this->id = $id;
         $this->word = $word;
         $this->maxAttempts = $maxAttempts;
         $this->attemptsLeft = $maxAttempts;
@@ -108,4 +110,9 @@ class Game
             "usedLetters" => $this->usedLetters,
         ];
     }
+
+    public function toArray(): array {
+        return [];
+    }
+    public static function fromArray(array $array) {}
 }

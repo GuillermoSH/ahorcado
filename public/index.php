@@ -15,15 +15,25 @@ use App\WordProvider;
 use App\Storage;
 use App\History;
 
+use App\Presentation\Controllers\GameController;
+
+require __DIR__ . '/../src/Infrastructure/Autoload/Autoloader.php';
+\App\Infrastructure\Autoload\Autoloader::register('App\\', __DIR__ . '/../src');
+
 $storage = new Storage();
 $logger = new History();
 
-$config = parse_ini_file('../config.ini');
-$maxAttempts = (int) ($config['max_attempts'] ?? 6);
-$defaultCategory = $config['default_category'] ?? 'animales';
+$config = require __DIR__ . '/../config/config.php';
+$controller = new GameController($config);
+$controller->handle();
+
+$wordsPath   = $config['storage']['words_file'];
+$gamesPath   = $config['storage']['games_file'];
+$maxAttempts = (int) $config['game']['max_attempts'];
+$defaultCategory = $config['game']['default_category'] ?? 'animals';
 
 $category = $_GET['category'] ?? $storage->get('category') ?? null;
-$pointsPerHint = (int) $config['points_per_hint'];
+$pointsPerHint = (int) $config['game']['points_per_hint'];
 $errorMessage = "";
 $hint = "";
 
