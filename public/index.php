@@ -3,78 +3,37 @@
 declare(strict_types=1);
 session_start();
 
-require_once "../src/Renderer.php";
-require_once "../src/Game.php";
-require_once "../src/WordProvider.php";
-require_once "../src/Storage.php";
-require_once "../src/History.php";
-
-use App\Renderer;
-use App\Game;
-use App\WordProvider;
-use App\Storage;
-use App\History;
-
 use App\Presentation\Controllers\GameController;
+use App\Storage;
+use App\Domain\Entity\Renderer;
 
-require __DIR__ . '/../src/Infrastructure/Autoload/Autoloader.php';
-\App\Infrastructure\Autoload\Autoloader::register('App\\', __DIR__ . '/../src');
+require '../src/Infrastructure/Autoload/Autoloader.php';
+\App\Infrastructure\Autoload\Autoloader::register('App\\',  '../src');
 
-$storage = new Storage();
-$logger = new History();
-
-$config = require __DIR__ . '/../config/config.php';
+$config = require '../config/config.php';
 $controller = new GameController($config);
 $controller->handle();
 
 $wordsPath   = $config['storage']['words_file'];
 $gamesPath   = $config['storage']['games_file'];
-$maxAttempts = (int) $config['game']['max_attempts'];
+$pointsPerHint = $config['game']['points_per_hint'];
+$maxAttempts = $config['game']['max_attempts'];
 $defaultCategory = $config['game']['default_category'] ?? 'animals';
 
+$game = $controller->createNewGame("HOLA");
+$storage = new Storage();
+$renderer = new Renderer($maxAttempts);
+
 $category = $_GET['category'] ?? $storage->get('category') ?? null;
-$pointsPerHint = (int) $config['game']['points_per_hint'];
 $errorMessage = "";
 $hint = "";
 
 if ($category === null) {
-?>
-    <!DOCTYPE html>
-    <html lang="es">
-
-    <head>
-        <meta charset="UTF-8" />
-        <title>Seleccionar categoría - Ahorcado</title>
-        <link rel="stylesheet" href="styles.css" />
-    </head>
-
-    <body>
-        <div class="container start-screen flex-center">
-            <h1>🎯 Juego del Ahorcado</h1>
-            <form method="get" class="flex-center">
-                <label for="category">Selecciona una categoría:</label>
-                <div class="custom-select-wrapper">
-                    <select autofocus name="category" id="category" required>
-                        <option value="animales">🐾 Animales</option>
-                        <option value="frutas">🍎 Frutas</option>
-                        <option value="paises">🌍 Países</option>
-                        <option value="deportes">⚽ Deportes</option>
-                        <option value="peliculas">🎬 Películas</option>
-                    </select>
-                    <span class="select-arrow">▾</span>
-                </div>
-                <button type="submit" class="btn-primary">Iniciar partida</button>
-            </form>
-        </div>
-    </body>
-
-    </html>
-
-<?php
+    include("../src/Presentation/Views/SelectCategory.html");
     exit;
 }
 
-$storage->set('category', $category);
+/*$storage->set('category', $category);
 
 $state = $storage->get('state');
 if ($state === null) {
@@ -84,8 +43,6 @@ if ($state === null) {
 } else {
     $game = new Game($state['word'], $state['maxAttempts'], $state, $pointsPerHint);
 }
-
-$renderer = new Renderer($maxAttempts);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['letter'])) {
@@ -111,7 +68,7 @@ if ($game->isWon()) {
 } elseif ($game->isLost()) {
     $logger->log($game->getWord(), false, $game->getAttemptsLeft());
     $storage->reset();
-}
+}*/
 ?>
 
 <!DOCTYPE html>
