@@ -7,80 +7,10 @@ namespace App\Domain\Entity;
 class Renderer
 {
     private int $maxAttempts;
-    private array $ascii = [
-        6 => "
-            ______
-            |    |
-            |    
-            |    
-            |    
-            |    
-            |______
-            ",
-        5 => "
-            ______
-            |    |
-            |    O
-            |    
-            |    
-            |    
-            |______
-            ",
-        4 => "
-            ______
-            |    |
-            |    O
-            |    |
-            |    
-            |    
-            |______
-            ",
-        3 => "
-            ______
-            |    |
-            |    O
-            |   /|
-            |    
-            |    
-            |______
-            ",
-        2 => "
-            ______
-            |    |
-            |    O
-            |   /|\\
-            |    
-            |    
-            |______
-            ",
-        1 => "
-            ______
-            |    |
-            |    O
-            |   /|\\
-            |   / 
-            |    
-            |______
-            ",
-        0 => "
-            ______
-            |    |
-            |    O
-            |   /|\\
-            |   / \\
-            |    
-            |______
-            ",
-    ];
 
     public function __construct(int $maxAttempts)
     {
         $this->maxAttempts = $maxAttempts;
-    }
-
-    public function ascii(int $attemptsLeft): string
-    {
-        return $this->ascii[$attemptsLeft] ?? $this->ascii[6];
     }
 
     public function drawSvg(int $attemptsLeft): string

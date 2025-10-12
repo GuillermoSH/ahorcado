@@ -1,6 +1,6 @@
 {
     "words": {
-        "animals": [
+        "animales": [
             "PERRO",
             "GATO",
             "ELEFANTE",
@@ -17,7 +17,7 @@
             "ARDILLA",
             "CANGURO"
         ],
-        "sports": [
+        "deportes": [
             "FUTBOL",
             "BALONCESTO",
             "TENIS",
@@ -34,7 +34,7 @@
             "ESCALADA",
             "PATINAJE"
         ],
-        "fruits": [
+        "frutas": [
             "MANZANA",
             "PLATANO",
             "FRESA",
@@ -51,7 +51,7 @@
             "GRANADA",
             "LIMON"
         ],
-        "countries": [
+        "paises": [
             "ESPAÑA",
             "FRANCIA",
             "ALEMANIA",
@@ -68,7 +68,7 @@
             "INDIA",
             "AUSTRALIA"
         ],
-        "movies": [
+        "peliculas": [
             "TITANIC",
             "GLADIATOR",
             "INCEPTION",

@@ -1,7 +1,7 @@
 <?php
     declare(strict_types=1);
 
-    namespace App;
+    namespace App\Infrastructure\Persistence;
 
     class WordProvider {
         private string $filePath;

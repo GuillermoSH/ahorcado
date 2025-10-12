@@ -9,28 +9,38 @@ use RuntimeException;
 
 final class Game
 {
-    public int $id;
+    public string $id;
     private string $word;
     private int $maxAttempts;
     private int $attemptsLeft;
     private array $usedLetters;
     private int $pointsPerHint;
+    private string $category;
 
-    public function __construct(int $id, string $word, int $maxAttempts = 6, ?array $state = null, int $pointsPerHint = 1)
-    {
+    public function __construct(
+        string $id,
+        string $word,
+        string $category = "animales",
+        int $maxAttempts = 6,
+        ?array $state = null,
+        int $pointsPerHint = 1,
+    ) {
         $this->id = $id;
         $this->word = $word;
         $this->maxAttempts = $maxAttempts;
         $this->attemptsLeft = $maxAttempts;
         $this->usedLetters = [];
+        $this->pointsPerHint = $pointsPerHint;
+        $this->category = $category;
+
         if ($state !== null) {
             $this->word = $state["word"];
             $this->maxAttempts = $state["maxAttempts"];
             $this->attemptsLeft = $state["attemptsLeft"];
             $this->usedLetters = $state["usedLetters"];
         }
-        $this->pointsPerHint = $pointsPerHint;
     }
+
 
     public function guessLetter(string $letter): void
     {
@@ -53,12 +63,15 @@ final class Game
         $maskedWord = $this->getMaskedWord();
 
         $hiddenIndexes = [];
-        for ($i = 0, $len = strlen($this->word); $i < $len; $i++) {
-            if ($maskedWord[$i] === '_') $hiddenIndexes[] = $i;
+        $len = mb_strlen($this->word, 'UTF-8');
+        for ($i = 0; $i < $len; $i++) {
+            if (mb_substr($maskedWord, $i, 1, 'UTF-8') === '_') {
+                $hiddenIndexes[] = $i;
+            }
         }
 
         $index = $hiddenIndexes[array_rand($hiddenIndexes)];
-        $hint = $this->word[$index];
+        $hint = mb_substr($this->word, $index, 1, 'UTF-8');
 
         $this->guessLetter($hint);
         $this->attemptsLeft = $this->attemptsLeft - $this->pointsPerHint;
@@ -91,6 +104,12 @@ final class Game
         return $this->getMaskedWord() === $this->word;
     }
 
+    public function getCategory(): string
+    {
+        return $this->category;
+    }
+
+
     public function isLost(): bool
     {
         return $this->attemptsLeft === 0;
@@ -111,8 +130,33 @@ final class Game
         ];
     }
 
-    public function toArray(): array {
-        return [];
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'word' => $this->word,
+            'maxAttempts' => $this->maxAttempts,
+            'attemptsLeft' => $this->attemptsLeft,
+            'usedLetters' => $this->usedLetters,
+            'pointsPerHint' => $this->pointsPerHint,
+            'category' => $this->category,
+        ];
     }
-    public static function fromArray(array $array) {}
+
+    public static function fromArray(array $data): self
+    {
+        return new self(
+            $data['id'],
+            $data['word'],
+            $data['maxAttempts'],
+            $data['category'] ?? 'animales',
+            [
+                'word' => $data['word'],
+                'maxAttempts' => $data['maxAttempts'],
+                'attemptsLeft' => $data['attemptsLeft'],
+                'usedLetters' => $data['usedLetters'] ?? [],
+            ],
+            $data['pointsPerHint'] ?? 1,
+        );
+    }
 }

@@ -1,131 +1,14 @@
 <?php
-
 declare(strict_types=1);
+
 session_start();
 
 use App\Presentation\Controllers\GameController;
-use App\Storage;
-use App\Domain\Entity\Renderer;
 
-require '../src/Infrastructure/Autoload/Autoloader.php';
-\App\Infrastructure\Autoload\Autoloader::register('App\\',  '../src');
+require __DIR__ . '/../src/Infrastructure/Autoload/Autoloader.php';
+\App\Infrastructure\Autoload\Autoloader::register('App\\', __DIR__ . '/../src');
 
-$config = require '../config/config.php';
+$config = require __DIR__ . '/../config/config.php';
+
 $controller = new GameController($config);
 $controller->handle();
-
-$wordsPath   = $config['storage']['words_file'];
-$gamesPath   = $config['storage']['games_file'];
-$pointsPerHint = $config['game']['points_per_hint'];
-$maxAttempts = $config['game']['max_attempts'];
-$defaultCategory = $config['game']['default_category'] ?? 'animals';
-
-$game = $controller->createNewGame("HOLA");
-$storage = new Storage();
-$renderer = new Renderer($maxAttempts);
-
-$category = $_GET['category'] ?? $storage->get('category') ?? null;
-$errorMessage = "";
-$hint = "";
-
-if ($category === null) {
-    include("../src/Presentation/Views/SelectCategory.html");
-    exit;
-}
-
-/*$storage->set('category', $category);
-
-$state = $storage->get('state');
-if ($state === null) {
-    $wordProvider = new WordProvider("../data/words_$category.txt");
-    $game = new Game($wordProvider->getRandomWord(), $maxAttempts, null, $pointsPerHint);
-    $storage->set('state', $game->toState());
-} else {
-    $game = new Game($state['word'], $state['maxAttempts'], $state, $pointsPerHint);
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['letter'])) {
-        try {
-            $letter = strtoupper($_POST['letter']);
-            $game->guessLetter($letter);
-        } catch (InvalidArgumentException $e) {
-            $errorMessage = $e->getMessage();
-        }
-    } elseif (isset($_POST['hint'])) {
-        try {
-            $hint = $game->revealHint();
-        } catch (RuntimeException $e) {
-            $errorMessage = $e->getMessage();
-        }
-    }
-    $storage->set('state', $game->toState());
-}
-
-if ($game->isWon()) {
-    $logger->log($game->getWord(), true, $game->getAttemptsLeft());
-    $storage->reset();
-} elseif ($game->isLost()) {
-    $logger->log($game->getWord(), false, $game->getAttemptsLeft());
-    $storage->reset();
-}*/
-?>
-
-<!DOCTYPE html>
-<html lang="es">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Ahorcado en PHP</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-
-<body>
-    <div class="container flex-center">
-        <h1>🎯 Juego del Ahorcado (<?php echo ucfirst($category); ?>)</h1>
-
-        <?php echo $renderer->drawSvg($game->getAttemptsLeft()); ?>
-
-        <h2 class="masked-word"><?php echo implode(" ", str_split($game->getMaskedWord())); ?></h2>
-        <div class="game-info">
-            <div class="game-stat">
-                <h3>Intentos restantes:</h3>
-                <p><?php echo $game->getAttemptsLeft(); ?></p>
-            </div>
-            <div class="game-stat">
-                <h3>Letras usadas:</h3>
-                <p><?php echo implode(", ", $game->getUsedLetters()); ?></p>
-            </div>
-        </div>
-
-        <?php if ($errorMessage): ?>
-            <p class="error-message">🚨 <?php echo $errorMessage; ?></p>
-        <?php endif; ?>
-
-        <?php if ($hint): ?>
-            <p class="hint-message">🔍 Se reveló la letra <strong><?php echo $hint; ?></strong>.</p>
-        <?php endif; ?>
-
-        <?php if ($game->isWon()): ?>
-            <h2>🎉 ¡Ganaste! La palabra era <span class="highlight"><?php echo $game->getWord(); ?></span></h2>
-            <a href="index.php">Volver al inicio</a>
-
-        <?php elseif ($game->isLost()): ?>
-            <h2>💀 Perdiste. La palabra era <span class="highlight red"><?php echo $game->getWord(); ?></span></h2>
-            <a href="index.php">Intentar otra vez</a>
-
-        <?php else: ?>
-            <form method="post" class="game-form">
-                <label for="letter" class="form-label">Introduce una letra:</label>
-                <input type="text" id="letter" name="letter" maxlength="1" required autofocus>
-                <button type="submit">Adivinar</button>
-            </form>
-
-            <form method="post" class="hint-form">
-                <button name="hint" value="1" type="submit">🪄 Pedir pista (-<?php echo $pointsPerHint; ?> intento)</button>
-            </form>
-        <?php endif; ?>
-    </div>
-</body>
-
-</html>

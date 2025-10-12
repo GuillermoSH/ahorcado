@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App;
+namespace App\Infrastructure\Persistence;
 
 class History
 {
     private string $filePath;
 
-    public function __construct(string $filePath = '../logs/history.log')
+    public function __construct(string $filePath = '../../../storage/logs/history.log')
     {
         $this->filePath = $filePath;
     }

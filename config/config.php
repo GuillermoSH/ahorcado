@@ -7,8 +7,7 @@ return [
         'games_file' => '../storage/games.json',
     ],
     'game' => [
-        'max_attempts' => 10,
-        'default_category' => 'animals',
+        'max_attempts' => 7,
         'points_per_hint' => 1,
     ],
 ];
